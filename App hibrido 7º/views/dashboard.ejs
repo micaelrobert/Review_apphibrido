@@ -1,0 +1,44 @@
+<%- include('partials/header') %>
+
+<div class="container">
+    <div class="header-section">
+        <h1>📊 Dashboard</h1>
+        <p><%= description %></p>
+    </div>
+
+    <div class="stats-grid">
+        <div class="card stat-card">
+            <h3>Total de Tarefas</h3>
+            <p class="stat-number"><%= stats.total %></p>
+        </div>
+        <div class="card stat-card">
+            <h3>Concluídas</h3>
+            <p class="stat-number" style="color: #6c5ce7;"><%= stats.completed %></p>
+        </div>
+        <div class="card stat-card">
+            <h3>Pendentes</h3>
+            <p class="stat-number" style="color: #fd79a8;"><%= stats.pending %></p>
+        </div>
+        <div class="card stat-card">
+            <h3>Progresso</h3>
+            <div class="progress-bar-container">
+                <div class="progress-bar" style="width: <%= stats.percentage %>%;"></div>
+            </div>
+            <p class="stat-percentage"><%= stats.percentage %>%</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Últimas 5 Tarefas Adicionadas</h3>
+        <ul class="last-tasks-list">
+            <% last5Tasks.forEach(function(task) { %>
+                <li class="last-task-item <%= task.completed ? 'completed' : '' %>">
+                    <span class="task-status"><%= task.completed ? '✅' : '⏳' %></span>
+                    <span class="task-title"><%= task.title %></span>
+                </li>
+            <% }); %>
+        </ul>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

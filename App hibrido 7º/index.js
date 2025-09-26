@@ -93,6 +93,12 @@ app.use(express.urlencoded({
     limit: '10mb' 
 }));
 
+// Middleware para adicionar informações de rota
+app.use((req, res, next) => {
+    res.locals.currentPath = req.path;
+    next();
+});
+
 // Middleware para arquivos estáticos
 app.use(express.static(path.join(__dirname, 'public'), {
     maxAge: NODE_ENV === 'production' ? '1d' : 0,
