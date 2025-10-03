@@ -1,58 +1,133 @@
 <%- include('partials/header') %>
 
-<div class="container">
-    <div class="header-section">
-        <h1>📋 Gerenciador de Tarefas</h1>
-        <p><%= description %></p>
-        <div class="task-counter">
-            <strong><%= completedTasks %>/<%= tasks.length %></strong> tarefas concluídas
-        </div>
-    </div>
-
+<main class="container mt-5">
     <div class="card add-task-card">
-        <h3>Adicionar Nova Tarefa</h3>
-        <form action="/tarefas/add" method="POST" id="addTaskForm">
+        <h3><i class="fas fa-plus-circle"></i> Adicionar Nova Tarefa</h3>
+        <form id="addTaskForm">
             <div class="form-group">
-                <input type="text" id="title" name="title" placeholder="Título da tarefa" required>
+                <input type="text" id="title" placeholder="> Título da Tarefa_" required>
             </div>
             <div class="form-group">
-                <textarea id="description" name="description" placeholder="Descrição da tarefa" required></textarea>
+                <textarea id="description" placeholder="> Descrição..." required></textarea>
             </div>
             <div class="form-group">
-                <select id="priority" name="priority" required>
-                    <option value="" disabled selected>Selecione a prioridade</option>
-                    <option value="baixa">Baixa</option>
-                    <option value="media">Média</option>
-                    <option value="alta">Alta</option>
+                <select id="priority">
+                    <option value="baixa">Prioridade Baixa</option>
+                    <option value="media">Prioridade Média</option>
+                    <option value="alta">Prioridade Alta</option>
                 </select>
             </div>
-            <button type="submit" class="btn">Adicionar Tarefa</button>
+            <button type="submit" class="btn">Salvar Tarefa</button>
         </form>
     </div>
 
-    <div class="task-list">
-        <% tasks.forEach(function(task) { %>
-            <div class="card task-card <%= task.completed ? 'completed' : '' %> priority-<%= task.priority %>">
-                <div class="task-content">
-                    <div class="task-header">
-                        <h4 class="<%= task.completed ? 'task-title-completed' : '' %>">
-                            <%= task.title %>
-                        </h4>
-                        <span class="priority-badge priority-<%= task.priority %>"><%= task.priority %></span>
-                    </div>
-                    <p><%= task.description %></p>
-                </div>
-                <div class="task-actions">
-                     <form action="/tarefas/toggle/<%= task.id %>" method="POST" style="display: inline;">
-                        <input type="checkbox" onchange="this.form.submit()" <%= task.completed ? 'checked' : '' %}>
-                    </form>
-                    <form action="/tarefas/delete/<%= task.id %>" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir esta tarefa?');">
-                        <button type="submit" class="btn-delete">🗑️</button>
-                    </form>
-                </div>
+    <div class="card mt-4">
+        <h3><i class="fas fa-tasks"></i> Minhas Tarefas (<span id="completed-count">0</span> concluídas)</h3>
+        <div id="task-list">
             </div>
-        <% }); %>
     </div>
-</div>
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('addTaskForm');
+        const taskList = document.getElementById('task-list');
+        const completedCountSpan = document.getElementById('completed-count');
+        
+        const getInitialTasks = () => {
+            const tasksInStorage = localStorage.getItem('tasks');
+            if (tasksInStorage) {
+                return JSON.parse(tasksInStorage);
+            }
+            // Se não houver nada no localStorage, cria a lista inicial
+            const initialTasks = [
+                { id: 1, title: 'Configurar ambiente', description: 'Instalar Node.js e dependências.', priority: 'alta', completed: true },
+                { id: 2, title: 'Criar rotas', description: 'Definir as rotas da aplicação.', priority: 'media', completed: true },
+                { id: 3, title: 'Implementar funcionalidades', description: 'Codificar as features principais.', priority: 'alta', completed: false },
+                { id: 4, title: 'Estilizar o frontend', description: 'Aplicar o novo tema visual.', priority: 'baixa', completed: false }
+            ];
+            localStorage.setItem('tasks', JSON.stringify(initialTasks));
+            return initialTasks;
+        };
+
+        let tasks = getInitialTasks();
+
+        const saveTasks = () => {
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        };
+
+        const renderTasks = () => {
+            taskList.innerHTML = '';
+            let completedCount = 0;
+
+            if (tasks.length === 0) {
+                taskList.innerHTML = '<p class="text-center" style="opacity: 0.7;">// Nenhuma tarefa encontrada.</p>';
+            }
+
+            tasks.forEach(task => {
+                if (task.completed) completedCount++;
+
+                const taskCard = document.createElement('div');
+                taskCard.className = `task-card ${task.completed ? 'completed' : ''} priority-${task.priority}`;
+                taskCard.dataset.id = task.id;
+
+                taskCard.innerHTML = `
+                    <div class="task-info">
+                        <h4 class="task-title ${task.completed ? 'task-title-completed' : ''}">${task.title}</h4>
+                        <p>${task.description}</p>
+                    </div>
+                    <div class="task-actions">
+                        <label class="custom-checkbox">
+                            <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleComplete(${task.id})">
+                            <span class="checkmark"></span>
+                            Concluída
+                        </label>
+                        <button class="btn-delete" onclick="deleteTask(${task.id})"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+                taskList.appendChild(taskCard);
+            });
+
+            completedCountSpan.textContent = completedCount;
+        };
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const newTask = {
+                id: Date.now(),
+                title: document.getElementById('title').value,
+                description: document.getElementById('description').value,
+                priority: document.getElementById('priority').value,
+                completed: false
+            };
+
+            tasks.unshift(newTask);
+            saveTasks();
+            renderTasks();
+            form.reset();
+        });
+
+        window.toggleComplete = (id) => {
+            const task = tasks.find(t => t.id === id);
+            if (task) {
+                task.completed = !task.completed;
+                saveTasks();
+                renderTasks();
+            }
+        };
+
+        window.deleteTask = (id) => {
+            if (confirm('Tem certeza que deseja excluir esta tarefa?')) {
+                tasks = tasks.filter(t => t.id !== id);
+                saveTasks();
+                renderTasks();
+            }
+        };
+
+        renderTasks();
+    });
+</script>
+
 
 <%- include('partials/footer') %>

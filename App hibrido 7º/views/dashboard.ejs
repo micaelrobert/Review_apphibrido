@@ -1,44 +1,91 @@
 <%- include('partials/header') %>
 
-<div class="container">
+<main class="container mt-5">
     <div class="header-section">
-        <h1>📊 Dashboard</h1>
+        <h1>Dashboard</h1>
         <p><%= description %></p>
     </div>
 
     <div class="stats-grid">
-        <div class="card stat-card">
-            <h3>Total de Tarefas</h3>
-            <p class="stat-number"><%= stats.total %></p>
+        <div class="card stat-card stat-card-outer">
+            <h4>Total de Tarefas</h4>
+            <div class="stat-number" id="total-tasks">0</div>
         </div>
-        <div class="card stat-card">
-            <h3>Concluídas</h3>
-            <p class="stat-number" style="color: #6c5ce7;"><%= stats.completed %></p>
+        <div class="card stat-card stat-card-inner">
+            <h4>Concluídas</h4>
+            <div class="stat-number" id="completed-tasks">0</div>
         </div>
-        <div class="card stat-card">
-            <h3>Pendentes</h3>
-            <p class="stat-number" style="color: #fd79a8;"><%= stats.pending %></p>
+        <div class="card stat-card stat-card-inner">
+            <h4>Pendentes</h4>
+            <div class="stat-number" id="pending-tasks">0</div>
         </div>
-        <div class="card stat-card">
-            <h3>Progresso</h3>
-            <div class="progress-bar-container">
-                <div class="progress-bar" style="width: <%= stats.percentage %>%;"></div>
-            </div>
-            <p class="stat-percentage"><%= stats.percentage %>%</p>
+        </div>
+
+    <div class="card progress-card-container text-center">
+        <h4>Progresso Geral</h4>
+        <div class="progress-display">
+            <span id="completion-percentage">0</span><span class="percent-sign">%</span>
+        </div>
+        <div class="progress-bar-container mt-3">
+            <div class="progress-bar" id="progress-bar" style="width: 0%;"></div>
         </div>
     </div>
 
+
     <div class="card">
-        <h3>Últimas 5 Tarefas Adicionadas</h3>
-        <ul class="last-tasks-list">
-            <% last5Tasks.forEach(function(task) { %>
-                <li class="last-task-item <%= task.completed ? 'completed' : '' %>">
-                    <span class="task-status"><%= task.completed ? '✅' : '⏳' %></span>
-                    <span class="task-title"><%= task.title %></span>
-                </li>
-            <% }); %>
-        </ul>
+        <h3><i class="fas fa-history"></i> Últimas 5 Tarefas Adicionadas</h3>
+        <ul class="list-group" id="last-tasks-list">
+            </ul>
     </div>
-</div>
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+        const totalTasks = tasks.length;
+        const completedTasks = tasks.filter(t => t.completed).length;
+        const pendingTasks = totalTasks - completedTasks;
+        const completionPercentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+
+        document.getElementById('total-tasks').textContent = totalTasks;
+        document.getElementById('completed-tasks').textContent = completedTasks;
+        document.getElementById('pending-tasks').textContent = pendingTasks;
+        
+        // Atualiza o novo display de progresso
+        document.getElementById('completion-percentage').textContent = completionPercentage;
+
+        const progressBar = document.getElementById('progress-bar');
+        progressBar.style.width = completionPercentage + '%';
+
+        const last5Tasks = tasks.slice(0, 5);
+        const lastTasksList = document.getElementById('last-tasks-list');
+        lastTasksList.innerHTML = '';
+
+        if (last5Tasks.length === 0) {
+            lastTasksList.innerHTML = '<li class="list-group-item">// Nenhuma tarefa recente.</li>';
+        } else {
+            last5Tasks.forEach(task => {
+                const listItem = document.createElement('li');
+                listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
+                
+                const titleSpan = document.createElement('span');
+                titleSpan.textContent = task.title;
+                if (task.completed) {
+                    titleSpan.style.textDecoration = 'line-through';
+                    titleSpan.style.opacity = '0.6';
+                }
+
+                const badge = document.createElement('span');
+                badge.className = `badge ${task.completed ? 'badge-success' : 'badge-warning'}`;
+                badge.textContent = task.completed ? 'Concluída' : 'Pendente';
+                
+                listItem.appendChild(titleSpan);
+                listItem.appendChild(badge);
+                lastTasksList.appendChild(listItem);
+            });
+        }
+    });
+</script>
 
 <%- include('partials/footer') %>
