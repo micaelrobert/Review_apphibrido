@@ -29,17 +29,30 @@
 </main>
 
 <script>
+    const user = sessionStorage.getItem('loggedInUser');
+    if (!user) {
+        document.querySelector('main').style.display = 'none';
+        showModal(
+            'Acesso Negado',
+            'Você precisa estar logado para acessar esta página.',
+            'alert',
+            () => { window.location.href = '/login'; }
+        );
+    }
     document.addEventListener('DOMContentLoaded', () => {
+        if (!user) return;
+
         const form = document.getElementById('addTaskForm');
         const taskList = document.getElementById('task-list');
         const completedCountSpan = document.getElementById('completed-count');
         
+        // Função que verifica o localStorage e adiciona as tarefas pré-definidas se estiver vazio
         const getInitialTasks = () => {
             const tasksInStorage = localStorage.getItem('tasks');
-            if (tasksInStorage) {
+            if (tasksInStorage && tasksInStorage !== '[]') {
                 return JSON.parse(tasksInStorage);
             }
-            // Se não houver nada no localStorage, cria a lista inicial
+            
             const initialTasks = [
                 { id: 1, title: 'Configurar ambiente', description: 'Instalar Node.js e dependências.', priority: 'alta', completed: true },
                 { id: 2, title: 'Criar rotas', description: 'Definir as rotas da aplicação.', priority: 'media', completed: true },
@@ -118,16 +131,20 @@
         };
 
         window.deleteTask = (id) => {
-            if (confirm('Tem certeza que deseja excluir esta tarefa?')) {
-                tasks = tasks.filter(t => t.id !== id);
-                saveTasks();
-                renderTasks();
-            }
+            showModal(
+                'Confirmar Exclusão',
+                'Tem certeza que deseja excluir esta tarefa? Esta ação não pode ser desfeita.',
+                'confirm',
+                () => {
+                    tasks = tasks.filter(t => t.id !== id);
+                    saveTasks();
+                    renderTasks();
+                }
+            );
         };
 
         renderTasks();
     });
 </script>
-
 
 <%- include('partials/footer') %>

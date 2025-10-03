@@ -6,8 +6,24 @@
         <p class="lead">Organize suas tarefas de forma simples e eficiente no estilo hacker.</p>
         <hr class="my-4" style="border-top: 1px solid var(--border-color);">
         <p>> Comece agora mesmo a gerenciar suas tarefas e aumentar sua produtividade.</p>
-        <a class="btn btn-home" href="/tarefas" role="button">Ver Tarefas</a>
+        <a class="btn btn-home" href="#" onclick="checkLoginAndRedirect()" role="button">Ver Tarefas</a>
     </div>
 </main>
+
+<script>
+    function checkLoginAndRedirect() {
+        const user = sessionStorage.getItem('loggedInUser');
+        if (user) {
+            window.location.href = '/tarefas';
+        } else {
+            showModal(
+                'Acesso Negado', 
+                'Faça login para acessar o painel de tarefas.', 
+                'alert',
+                () => { window.location.href = '/login'; } 
+            );
+        }
+    }
+</script>
 
 <%- include('partials/footer') %>

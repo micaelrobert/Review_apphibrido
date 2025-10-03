@@ -1,13 +1,54 @@
-<script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const currentPath = window.location.pathname;
-            const navLinks = document.querySelectorAll('.main-header nav a');
-            navLinks.forEach(link => {
-                if (link.getAttribute('href') === currentPath) {
-                    link.classList.add('active');
-                }
-            });
-        });
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <div id="hacker-modal" class="modal-backdrop" style="display: none;">
+        <div class="modal-content card">
+            <h3 id="modal-title">// System Alert</h3>
+            <p id="modal-message">Message here</p>
+            <div id="modal-actions">
+                <button id="modal-ok-btn" class="btn">OK</button>
+                <button id="modal-cancel-btn" class="btn btn-secondary" style="display: none;">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Lógica do Modal 
+        const modal = document.getElementById('hacker-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalMessage = document.getElementById('modal-message');
+        const modalOkBtn = document.getElementById('modal-ok-btn');
+        const modalCancelBtn = document.getElementById('modal-cancel-btn');
+
+        // Função para mostrar o modal
+        function showModal(title, message, type = 'alert', onOk = () => {}, onCancel = () => {}) {
+            modalTitle.innerHTML = `// ${title}`;
+            modalMessage.textContent = message;
+            
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('show'), 10);
+
+            if (type === 'confirm') {
+                modalCancelBtn.style.display = 'inline-block';
+            } else {
+                modalCancelBtn.style.display = 'none';
+            }
+
+            modalOkBtn.onclick = () => {
+                closeModal();
+                onOk();
+            };
+
+            modalCancelBtn.onclick = () => {
+                closeModal();
+                onCancel();
+            };
+        }
+        function closeModal() {
+            modal.classList.remove('show');
+            setTimeout(() => modal.style.display = 'none', 300);
+        }
     </script>
-</body>
+    </body>
 </html>

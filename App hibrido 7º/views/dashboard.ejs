@@ -40,6 +40,17 @@
 </main>
 
 <script>
+        const user = sessionStorage.getItem('loggedInUser');
+         if (!user) {
+        // Esconde o conteúdo principal se não estiver logado
+        document.querySelector('main').style.display = 'none';
+        showModal(
+            'Acesso Negado',
+            'Você precisa estar logado para acessar esta página.',
+            'alert',
+            () => { window.location.href = '/login'; } // Redireciona ao clicar OK
+        );
+    }
     document.addEventListener('DOMContentLoaded', () => {
         const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
 
