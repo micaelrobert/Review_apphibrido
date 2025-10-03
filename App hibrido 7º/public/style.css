@@ -167,3 +167,117 @@ input:focus, textarea:focus, select:focus { outline: none; border-color: var(--p
 }
 
 .user-greeting { cursor: default; opacity: 0.7; }
+/* --- Rodapé Futurista v2.0 --- */
+@keyframes pulse {
+    0% { transform: scale(1); box-shadow: 0 0 5px var(--priority-baixa); }
+    50% { transform: scale(1.1); box-shadow: 0 0 15px var(--priority-baixa); }
+    100% { transform: scale(1); box-shadow: 0 0 5px var(--priority-baixa); }
+}
+
+.site-footer {
+    padding: 2rem 0 1.5rem 0;
+    margin-top: 40px;
+    background-color: var(--card-background);
+    border-top: 1px solid var(--border-color);
+    backdrop-filter: blur(5px);
+    position: relative;
+}
+
+.footer-grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+    gap: 20px;
+    padding: 0 20px;
+}
+
+.footer-col {
+    font-family: var(--font-secondary);
+}
+
+.footer-col-center { text-align: center; }
+.footer-col-right { text-align: right; }
+
+.footer-title {
+    font-family: var(--font-primary);
+    color: var(--text-color);
+    opacity: 0.6;
+    font-size: 0.8rem;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.status-line {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+}
+
+.status-indicator-dot {
+    width: 10px;
+    height: 10px;
+    background-color: var(--priority-baixa);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+.status-ok {
+    color: var(--priority-baixa);
+    font-weight: bold;
+}
+
+.developer-name {
+    font-family: var(--font-primary);
+    font-size: 1.2rem;
+    color: var(--primary-purple);
+    text-shadow: 0 0 5px var(--glow-color);
+    margin: 0;
+}
+
+.social-links {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+}
+
+.social-icon {
+    font-size: 1.8rem;
+    color: var(--text-color);
+    opacity: 0.7;
+    transition: all 0.3s ease;
+    padding: 5px;
+}
+
+.social-icon:hover {
+    opacity: 1;
+    transform: scale(1.2);
+    text-shadow: 0 0 10px, 0 0 20px;
+}
+.social-icon.instagram:hover { color: #e4405f; }
+.social-icon.github:hover { color: #ffffff; }
+.social-icon.linkedin:hover { color: #0077b5; }
+.social-icon.discord:hover { color: #7289da; }
+
+
+.footer-bottom-line {
+    position: absolute;
+    bottom: 5px;
+    left: 2%;
+    width: 96%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-color), transparent);
+}
+
+@media (max-width: 768px) {
+    .footer-grid-container {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    .footer-col, .footer-col-right {
+        text-align: center;
+    }
+    .status-line, .social-links {
+        justify-content: center;
+    }
+}

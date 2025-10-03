@@ -1,4 +1,29 @@
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<footer class="site-footer">
+        <div class="footer-grid-container">
+            <div class="footer-col">
+                <span class="footer-title">> STATUS</span>
+                <p class="status-line">
+                    <span class="status-indicator-dot"></span>
+                    <span>System Status:</span> <span class="status-ok">ONLINE</span>
+                </p>
+            </div>
+            <div class="footer-col footer-col-center">
+                <span class="footer-title">> Desenvolvido por</span>
+                <p class="developer-name">Micael Robert</p>
+            </div>
+            <div class="footer-col footer-col-right">
+                <span class="footer-title">> Contato</span>
+                <div class="social-links">
+                    <a href="https://www.instagram.com/micaelrobert_/" target="_blank" aria-label="Instagram" class="social-icon instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://github.com/micaelrobert" target="_blank" aria-label="GitHub" class="social-icon github"><i class="fab fa-github"></i></a>
+                    <a href="https://www.linkedin.com/in/micaelroberth/" target="_blank" aria-label="LinkedIn" class="social-icon linkedin"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="https://discord.com/invite/nEynGJk5" target="_blank" aria-label="Discord" class="social-icon discord"><i class="fab fa-discord"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom-line"></div>
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
@@ -14,14 +39,13 @@
     </div>
 
     <script>
-        // Lógica do Modal 
+        // Lógica do Modal Futurista
         const modal = document.getElementById('hacker-modal');
         const modalTitle = document.getElementById('modal-title');
         const modalMessage = document.getElementById('modal-message');
         const modalOkBtn = document.getElementById('modal-ok-btn');
         const modalCancelBtn = document.getElementById('modal-cancel-btn');
 
-        // Função para mostrar o modal
         function showModal(title, message, type = 'alert', onOk = () => {}, onCancel = () => {}) {
             modalTitle.innerHTML = `// ${title}`;
             modalMessage.textContent = message;
@@ -45,10 +69,11 @@
                 onCancel();
             };
         }
+
         function closeModal() {
             modal.classList.remove('show');
             setTimeout(() => modal.style.display = 'none', 300);
         }
     </script>
-    </body>
+</body>
 </html>
